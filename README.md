@@ -9,10 +9,12 @@
 
 ## Description
 
-This application is a simple backend that serves as a solution for a rate-limiting challenge. 
-The challenge is to restrict the number of requests that a user can make in a given time frame.
-It also supports concurrent requests by instantiating multiple instances of the app using the Nest.js cluster module. This allows for multiple processes to handle incoming requests, improving performance and scalability.
-For performance, it features a cache system using Redis. This allows for frequently requested data to be stored in memory, reducing the number of database lookups and speeding up response times.
+This application is a simple backend that serves as a solution for a rate-limiting challenge. <br>
+The challenge is to restrict the number of requests that a user can make in a given time frame.<br>
+It also supports concurrent requests by instantiating multiple instances of the app using the Nest.js cluster module.
+<br>
+For performance, it features a cache system using Redis.
+<br>
 For storage, it uses MongoDB and Redis for caching.
 
 ## Running the app
@@ -21,7 +23,7 @@ The app can be run using `docker-compose`. Simply navigate to the root folder, w
 ```bash
 docker-compose up
 ```
-This will start the necessary containers, including the app, redis, mongo and any other dependencies. 
+This will start the necessary containers, including the `app`, `redis` and `mongo`. 
 
 Please make sure you have installed Docker and Docker Compose before running the command above.
 
@@ -38,8 +40,8 @@ TOKEN_RATE_LIMIT
 ```
 
 # Endpoints & Description
-These are simple endpoints to test the rate-limiting.
-Weight is the increment of the rate-limit counter for each request made to the endpoint. So, if the rate-limit is set to 100, and the weight of the endpoint is 5, the user will be able to make 20 requests to that endpoint before the rate-limit is reached. This is was done due to the requirements of the code-challenge I've received.
+These are simple endpoints to test the rate-limiting.<br>
+Weight is the increment of the rate-limit counter for each request made to the endpoint. So, if the rate-limit is set to 100, and the weight of the endpoint is 5, the user will be able to make 20 requests using his/her ip or token before the rate-limit is reached. This is was done due to the requirements of the code-challenge I've received.
 
 ## Public Endpoints
 
@@ -48,6 +50,8 @@ Weight is the increment of the rate-limit counter for each request made to the e
 | GET /products | Returns a list of products | 5 |
 | GET /products/:id | Returns a product by id | 2 |
 | GET /products/:id/reviews | Returns just a string | 1 |
+| GET /flushall | Flushes the redis cache | N/A |
+
 
 ## Private Endpoints
 Private endpoints require a token to be passed in the header of the request, on the `x-access-token` field. Any valid `UUID` will work as a token.
@@ -57,7 +61,6 @@ Private endpoints require a token to be passed in the header of the request, on 
 | GET /couriers | Returns a list of couriers | 5 |
 | GET /couriers/:id | Returns a courier by id | 2 |
 | GET /user/:id | Returns just a string | 1 |
-| GET /flushall | Flushes the redis cache | N/A |
 
 
 ## Rate-limiting
@@ -67,10 +70,10 @@ The rate-limiting can be configured by changing the values of the environment va
 IP_RATE_LIMIT //DEFAULT: 100
 TOKEN_RATE_LIMIT //DEFAULT: 200
 ```
-The rate-limite module was custom-made as requested by the code-challenge.
+The rate-limit module was custom-made as requested by the code-challenge.
 The token rate-limit is applied to the private endpoints, while the IP rate-limit is applied to the public endpoints.
 Once the rate-limit is reached, the app will return a `429` status code and will have a default expiration time of 60 minutes.
-To clear the rate-limit, simply make a `GET` request to the `/flushall` endpoint.
+To clear it, simply make a `GET` request to the `/flushall` endpoint.
 
 ## Stay in touch
 
