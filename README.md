@@ -70,7 +70,7 @@ The rate-limiting can be configured by changing the values of the environment va
 IP_RATE_LIMIT //DEFAULT: 100
 TOKEN_RATE_LIMIT //DEFAULT: 200
 ```
-The rate-limit module was custom-made as requested by the code-challenge.
+The rate-limit module was custom-made as requested by the code-challenge.<br>
 The token rate-limit is applied to the private endpoints, while the IP rate-limit is applied to the public endpoints.
 Once the rate-limit is reached, the app will return a `429` status code and will have a default expiration time of 60 minutes.
 To clear it, simply make a `GET` request to the `/flushall` endpoint.
