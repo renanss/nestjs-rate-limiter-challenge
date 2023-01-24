@@ -5,45 +5,73 @@
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+  <p align="center">Backend for a rate-limit Challenge developed on Nest.js</p>
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
-```bash
-$ npm install
-```
+This application is a simple backend that serves as a solution for a rate-limiting challenge. 
+The challenge is to restrict the number of requests that a user can make in a given time frame.
+It also supports concurrent requests by instantiating multiple instances of the app using the Nest.js cluster module. This allows for multiple processes to handle incoming requests, improving performance and scalability.
+For performance, it features a cache system using Redis. This allows for frequently requested data to be stored in memory, reducing the number of database lookups and speeding up response times.
+For storage, it uses MongoDB and Redis for caching.
 
 ## Running the app
+The app can be run using `docker-compose`. Simply navigate to the root folder, where the `docker-compose.yml` file is located, and run the following command:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+docker-compose up
 ```
+This will start the necessary containers, including the app, redis, mongo and any other dependencies. 
+
+Please make sure you have installed Docker and Docker Compose before running the command above.
+
+## Environment Variables
+
+The app uses the following environment variables, that can be set in the `Dockerfile` file:
+```bash
+MONGO_URI
+PORT
+REDIS_HOST
+REDIS_PORT
+IP_RATE_LIMIT
+TOKEN_RATE_LIMIT
+```
+
+# Endpoints & Description
+These are simple endpoints to test the rate-limiting.
+Weight is the increment of the rate-limit counter for each request made to the endpoint. So, if the rate-limit is set to 100, and the weight of the endpoint is 5, the user will be able to make 20 requests to that endpoint before the rate-limit is reached. This is was done due to the requirements of the code-challenge I've received.
+
+## Public Endpoints
+
+| Endpoint | Description | Weight |
+| --- | --- | --- |
+| GET /products | Returns a list of products | 5 |
+| GET /products/:id | Returns a product by id | 2 |
+| GET /products/:id/reviews | Returns just a string | 1 |
+
+## Private Endpoints
+Private endpoints require a token to be passed in the header of the request, on the `x-access-token` field. Any valid `UUID` will work as a token.
+
+| Endpoint | Description | Weight |
+| --- | --- | --- |
+| GET /couriers | Returns a list of couriers | 5 |
+| GET /couriers/:id | Returns a courier by id | 2 |
+| GET /user/:id | Returns just a string | 1 |
+| GET /flushall | Flushes the redis cache | N/A |
+
+
+## Rate-limiting
+
+The rate-limiting can be configured by changing the values of the environment variables:
+```bash
+IP_RATE_LIMIT //DEFAULT: 100
+TOKEN_RATE_LIMIT //DEFAULT: 200
+```
+The rate-limite module was custom-made as requested by the code-challenge.
+The token rate-limit is applied to the private endpoints, while the IP rate-limit is applied to the public endpoints.
+Once the rate-limit is reached, the app will return a `429` status code and will have a default expiration time of 60 minutes.
+To clear the rate-limit, simply make a `GET` request to the `/flushall` endpoint.
+
 ## Stay in touch
 
 - Author - [Renan Soares](https://www.linkedin.com/in/renanss/)
