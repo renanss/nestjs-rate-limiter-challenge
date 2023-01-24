@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 
 import { Product, ProductDocument } from '../../models/product/product.schema';
-
 @Injectable()
 export class ProductsSeeder {
   constructor(

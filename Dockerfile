@@ -7,9 +7,13 @@ EXPOSE 3000
 # Create and change to the app directory.
 
 # Set environment variables.
+ENV MONGO_URI=mongodb://mongo:27017
+ENV PORT=3000
+ENV REDIS_HOST=redis
+ENV REDIS_PORT=6379
+
 ENV IP_RATE_LIMIT=100
 ENV TOKEN_RATE_LIMIT=200
-ENV MONGO_URI=mongodb://mongo:27017
 
 WORKDIR /usr/src/app/
 

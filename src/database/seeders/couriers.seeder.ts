@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 
 import { Courier, CourierDocument } from '../../models/courier/courier.schema';
-
 @Injectable()
 export class CourierSeeder {
   constructor(
@@ -55,7 +54,6 @@ export class CourierSeeder {
         updated: new Date(),
       }),
     ];
-
     await Promise.all(couriers.map((courier) => courier.save()));
   }
 }

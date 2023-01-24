@@ -7,16 +7,13 @@ export class RedisService {
 
   constructor() {
     this.redisClient = new Redis({
-      host: 'redis',
-      port: 6379,
+      host: process.env.REDIS_HOST || 'redis',
+      port: Number(process.env.REDIS_PORT) || 6379,
     });
   }
 
-  async setValue(key: string, value: string) {
+  async setValue(key: string, value: any) {
     await this.redisClient.set(key, value);
-
-    // Set the expiration time to 2 minutes -- Code challenge purposes
-    await this.redisClient.expire(key, 120);
   }
 
   async getValue(key: string) {
